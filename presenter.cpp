@@ -3,5 +3,5 @@
 Presenter::Presenter() {
 }
 
-void Presenter::draw() {
+void Presenter::draw(Canvas &surface) {
 }
