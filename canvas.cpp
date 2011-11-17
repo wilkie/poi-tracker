@@ -20,6 +20,7 @@ Canvas::Canvas() {
 
 	glutInit(&argc, (char**)argv);
 	glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH);
+	glutInitWindowSize(720, 480);
 	glutCreateWindow("Poi-tracker");
 
 	glDisable(GL_DEPTH_TEST);
@@ -27,4 +28,8 @@ Canvas::Canvas() {
 
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glDisableClientState(GL_COLOR_ARRAY);
+}
+
+void Canvas::loop() {
+	glutMainLoop();
 }

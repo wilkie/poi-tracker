@@ -3,13 +3,16 @@
 #include "presenter.h"
 
 int main(int argc, char* argv[]) {
+	Presenter* p = new Presenter();
+
 	Kinect* k = new Kinect();
 
 	if (!k->initialize()) {
+		printf("BAH\n");
 		return -1;
 	}
 
-	Presenter* p = new Presenter();
+	p->run();
 
 	k->cleanup();
 

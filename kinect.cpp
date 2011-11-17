@@ -1,23 +1,5 @@
 #include "kinect.h"
 
-bool Kinect::has_failed(XnStatus rc, const char* msg) {
-	if (rc != XN_STATUS_OK) {
-		printf("%s failed: %s\n", msg, xnGetStatusString(rc));
-		return true;
-	}
-	return false;
-}
-
-bool Kinect::has_errors(XnStatus rc, xn::EnumerationErrors errors, const char* msg) {
-	if (rc == XN_STATUS_NO_NODE_PRESENT) {
-		XnChar strError[1024];
-		errors.ToString(strError, 1024);
-		printf("%s\n", strError);
-		return true;
-	}
-	return false;
-}
-
 Kinect::Kinect() {
 }
 
@@ -71,6 +53,28 @@ void Kinect::cleanup() {
 	g_GestureGenerator.Release();
 	g_Context.Release();
 }
+
+// Errors
+
+bool Kinect::has_failed(XnStatus rc, const char* msg) {
+	if (rc != XN_STATUS_OK) {
+		printf("%s failed: %s\n", msg, xnGetStatusString(rc));
+		return true;
+	}
+	return false;
+}
+
+bool Kinect::has_errors(XnStatus rc, xn::EnumerationErrors errors, const char* msg) {
+	if (rc == XN_STATUS_NO_NODE_PRESENT) {
+		XnChar strError[1024];
+		errors.ToString(strError, 1024);
+		printf("%s\n", strError);
+		return true;
+	}
+	return false;
+}
+
+// Callbacks
 
 void Kinect::touchingCallback(xn::HandTouchingFOVEdgeCapability &generator, XnUserID id, const XnPoint3D* pPosition, XnFloat fTime, XnDirection eDir, void* pCookie) {
 	Kinect* k = (Kinect*)pCookie;

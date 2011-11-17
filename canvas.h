@@ -4,6 +4,7 @@
 class Canvas {
 public:
 	Canvas();
+	void loop();
 };
 
 #endif

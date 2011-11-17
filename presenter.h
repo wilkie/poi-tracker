@@ -7,7 +7,12 @@ class Presenter {
 public:
 	Presenter();
 
-	void draw(Canvas &surface);
+	void draw();
+	void run();
+
+private:
+
+	Canvas* canvas;
 };
 
 #endif
