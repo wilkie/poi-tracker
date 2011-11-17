@@ -27,6 +27,11 @@ private:
 
 	bool has_failed(XnStatus rc, const char* msg);
 	bool has_errors(XnStatus rc, xn::EnumerationErrors errors, const char* msg);
+
+	static void touchingCallback(xn::HandTouchingFOVEdgeCapability&, XnUserID, const XnPoint3D*, XnFloat, XnDirection, void*);
+	static void gestureIntermediateCallback(xn::GestureGenerator&, const XnChar*, const XnPoint3D*, void*);
+	static void gestureProgressCallback(xn::GestureGenerator&, const XnChar*, const XnPoint3D*, XnFloat, void*);
+	static void gestureReadyForNextIntermediateCallback(xn::GestureGenerator&, const XnChar*, const XnPoint3D*, void*);
 };
 
 #endif

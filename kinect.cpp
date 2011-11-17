@@ -51,6 +51,16 @@ bool Kinect::initialize() {
 		return false;
 	}
 
+	XnCallbackHandle h;
+	if (g_HandsGenerator.IsCapabilitySupported(XN_CAPABILITY_HAND_TOUCHING_FOV_EDGE)) {
+		g_HandsGenerator.GetHandTouchingFOVEdgeCap().RegisterToHandTouchingFOVEdge(&Kinect::touchingCallback, this, h);
+	}
+
+	XnCallbackHandle hGestureIntermediateStageCompleted, hGestureProgress, hGestureReadyForNextIntermediateStage;
+	g_GestureGenerator.RegisterToGestureIntermediateStageCompleted(&Kinect::gestureIntermediateCallback, this, hGestureIntermediateStageCompleted);
+	g_GestureGenerator.RegisterToGestureReadyForNextIntermediateStage(&Kinect::gestureReadyForNextIntermediateCallback, this, hGestureReadyForNextIntermediateStage);
+	g_GestureGenerator.RegisterGestureCallbacks(NULL, &Kinect::gestureProgressCallback, this, hGestureProgress);
+
 	return true;
 }
 
@@ -60,4 +70,27 @@ void Kinect::cleanup() {
 	g_HandsGenerator.Release();
 	g_GestureGenerator.Release();
 	g_Context.Release();
+}
+
+void Kinect::touchingCallback(xn::HandTouchingFOVEdgeCapability &generator, XnUserID id, const XnPoint3D* pPosition, XnFloat fTime, XnDirection eDir, void* pCookie) {
+	Kinect* k = (Kinect*)pCookie;
+	//k->g_pDrawer->SetTouchingFOVEdge(id);
+}
+
+void Kinect::gestureIntermediateCallback(xn::GestureGenerator &generator, const XnChar* strGesture, const XnPoint3D* pPosition, void* pCookie) {
+	Kinect* k = (Kinect*)pCookie;
+	printf("Gesture %s: Intermediate stage complete (%f, %f, %f)\n",
+		strGesture, pPosition->X, pPosition->Y, pPosition->Z);
+}
+
+void Kinect::gestureProgressCallback(xn::GestureGenerator &generator, const XnChar* strGesture, const XnPoint3D* pPosition, XnFloat fProgress, void* pCookie) {
+	Kinect* k = (Kinect*)pCookie;
+	printf("Gesture %s: progress: %f (%f, %f, %f)\n",
+		strGesture, fProgress, pPosition->X, pPosition->Y, pPosition->Z);
+}
+
+void Kinect::gestureReadyForNextIntermediateCallback(xn::GestureGenerator &generator, const XnChar* strGesture, const XnPoint3D* pPosition, void* pCookie) {
+	Kinect* k = (Kinect*)pCookie;
+	printf("Gesture %s: Ready for next intermediate stage (%f, %f, %f)\n",
+		strGesture, pPosition->X, pPosition->Y, pPosition->Z);
 }
