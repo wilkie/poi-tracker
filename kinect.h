@@ -11,6 +11,7 @@ class Kinect {
 public:
 	Kinect();
 	bool initialize();
+	void cleanup();
 
 private:
 

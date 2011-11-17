@@ -53,3 +53,11 @@ bool Kinect::initialize() {
 
 	return true;
 }
+
+void Kinect::cleanup() {
+	g_ScriptNode.Release();
+	g_DepthGenerator.Release();
+	g_HandsGenerator.Release();
+	g_GestureGenerator.Release();
+	g_Context.Release();
+}

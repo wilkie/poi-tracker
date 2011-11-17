@@ -9,5 +9,9 @@ int main(int argc, char* argv[]) {
 		return -1;
 	}
 
+	Presenter* p = new Presenter();
+
+	k->cleanup();
+
 	return 0;
 }
