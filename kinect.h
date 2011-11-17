@@ -1,4 +1,7 @@
-#// OpenNI
+#ifndef KINECT_H
+#define KINECT_H
+
+// OpenNI
 #include <ni/XnOpenNI.h>
 #include <ni/XnCppWrapper.h>
 #include <ni/XnHash.h>
@@ -25,3 +28,5 @@ private:
 	bool has_failed(XnStatus rc, const char* msg);
 	bool has_errors(XnStatus rc, xn::EnumerationErrors errors, const char* msg);
 };
+
+#endif
