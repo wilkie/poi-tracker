@@ -18,6 +18,8 @@ Presenter::Presenter(Canvas* c) {
 
 void Presenter::draw() {
 	canvas->clear();
+
+	canvas->swap();
 }
 
 void Presenter::run() {
