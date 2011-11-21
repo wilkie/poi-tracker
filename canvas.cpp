@@ -33,3 +33,13 @@ Canvas::Canvas() {
 void Canvas::loop() {
 	glutMainLoop();
 }
+
+void Canvas::clear() {
+	// Clear buffer
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	// Setup OpenGL viewpoint
+	glMatrixMode(GL_PROJECTION);
+	glPushMatrix();
+	glLoadIdentity();
+}
