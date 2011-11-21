@@ -1,9 +1,10 @@
 // Local
 #include "kinect.h"
-#include "presenter.h"
+#include "window.h"
 
 int main(int argc, char* argv[]) {
-	Presenter* p = new Presenter();
+	Window* w = new Window();
+	Presenter* p = w->windowPresenter();
 
 	Kinect* k = new Kinect();
 

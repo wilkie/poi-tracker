@@ -1,7 +1,7 @@
 #include "presenter.h"
 
-Presenter::Presenter() {
-	canvas = new Canvas();
+Presenter::Presenter(Canvas* c) {
+	canvas = c;
 }
 
 void Presenter::draw() {

@@ -5,7 +5,7 @@
 
 class Presenter {
 public:
-	Presenter();
+	Presenter(Canvas* c);
 
 	void draw();
 	void run();
