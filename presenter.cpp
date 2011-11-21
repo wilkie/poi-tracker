@@ -29,4 +29,5 @@ void Presenter::glutDisplay() {
 }
 
 void Presenter::glutIdle() {
+	self->canvas->redisplay();
 }
