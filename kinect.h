@@ -17,6 +17,7 @@ public:
 	void cleanup();
 
 private:
+	// OpenNI
 	xn::EnumerationErrors errors;
 
 	xn::Context g_Context;
@@ -25,6 +26,10 @@ private:
 	xn::HandsGenerator g_HandsGenerator;
 	xn::GestureGenerator g_GestureGenerator;
 
+	// NITE
+	XnVSessionManager* g_pSessionManager;
+	XnVFlowRouter* g_pFlowRouter;
+
 	bool has_failed(XnStatus rc, const char* msg);
 	bool has_errors(XnStatus rc, xn::EnumerationErrors errors, const char* msg);
 
@@ -32,6 +37,12 @@ private:
 	static void gestureIntermediateCallback(xn::GestureGenerator&, const XnChar*, const XnPoint3D*, void*);
 	static void gestureProgressCallback(xn::GestureGenerator&, const XnChar*, const XnPoint3D*, XnFloat, void*);
 	static void gestureReadyForNextIntermediateCallback(xn::GestureGenerator&, const XnChar*, const XnPoint3D*, void*);
+
+	// NITE Callbacks
+	static void focusProgress(const XnChar* strFocus, const XnPoint3D& ptPosition, XnFloat fProgress, void* UserCxt);
+	static void sessionStarting(const XnPoint3D& ptPosition, void* UserCxt);
+	static void sessionEnding(void* UserCxt);
+	static void noHands(void* UserCxt);
 };
 
 #endif
