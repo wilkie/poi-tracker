@@ -6,7 +6,10 @@ public:
 	Canvas();
 
 	void loop();
+
 	void clear();
+	void swap();
+	void redisplay();
 };
 
 #endif

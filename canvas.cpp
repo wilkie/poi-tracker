@@ -42,4 +42,16 @@ void Canvas::clear() {
 	glMatrixMode(GL_PROJECTION);
 	glPushMatrix();
 	glLoadIdentity();
+
+	// Set up ortho mode
+	// TODO: get these values (constructor?)
+//	glOrtho(0, mode.nXRes, mode.nYRes, 0, -1.0, 1.0);
+}
+
+void Canvas::swap() {
+	glutSwapBuffers();
+}
+
+void Canvas::redisplay() {
+	glutPostRedisplay();
 }
