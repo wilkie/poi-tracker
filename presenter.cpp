@@ -2,6 +2,8 @@
 
 #include <GL/glut.h>
 
+Presenter* Presenter::self;
+
 Presenter::Presenter(Canvas* c) {
 	// Store the canvas
 	canvas = c;
@@ -15,6 +17,7 @@ Presenter::Presenter(Canvas* c) {
 }
 
 void Presenter::draw() {
+	canvas->clear();
 }
 
 void Presenter::run() {
@@ -22,6 +25,7 @@ void Presenter::run() {
 }
 
 void Presenter::glutDisplay() {
+	self->draw();
 }
 
 void Presenter::glutIdle() {

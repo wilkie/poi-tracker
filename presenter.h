@@ -13,7 +13,7 @@ public:
 private:
 
 	Canvas* canvas;
-	Presenter* self;
+	static Presenter* self;
 
 	static void glutDisplay();
 	static void glutIdle();
