@@ -8,7 +8,7 @@ int main(int argc, char* argv[]) {
 	Kinect* k = new Kinect();
 
 	if (!k->initialize()) {
-		printf("BAH\n");
+		printf("There were errors initializing the Kinect device.\n");
 		return -1;
 	}
 

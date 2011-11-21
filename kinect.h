@@ -17,8 +17,8 @@ public:
 	void cleanup();
 
 private:
+	xn::EnumerationErrors errors;
 
-	// TODO: Kill these globals with fire
 	xn::Context g_Context;
 	xn::ScriptNode g_ScriptNode;
 	xn::DepthGenerator g_DepthGenerator;

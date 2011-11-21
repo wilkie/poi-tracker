@@ -5,7 +5,6 @@ Kinect::Kinect() {
 
 bool Kinect::initialize() {
 	XnStatus rc = XN_STATUS_OK;
-	xn::EnumerationErrors errors;
 
 	// Initialize OpenNI
 	rc = g_Context.InitFromXmlFile("poi-tracker.xml", g_ScriptNode, &errors);
