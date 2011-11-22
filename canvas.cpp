@@ -47,8 +47,7 @@ void Canvas::clear() {
 	glLoadIdentity();
 
 	// Set up ortho mode
-	// TODO: get these values (constructor?)
-//	glOrtho(0, mode.nXRes, mode.nYRes, 0, -1.0, 1.0);
+	glOrtho(0, width, height, 0, -1.0, 1.0);
 }
 
 void Canvas::swap() {
