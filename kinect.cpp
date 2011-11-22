@@ -49,7 +49,7 @@ bool Kinect::initialize() {
 		return false;
 	}
 
-	g_pSessionManager->RegisterSession(NULL, &Kinect::sessionStarting, &Kinect::sessionEnding, &Kinect::focusProgress);
+	g_pSessionManager->RegisterSession(this, &Kinect::sessionStarting, &Kinect::sessionEnding, &Kinect::focusProgress);
 
 	g_pDrawer = new PointDrawer(20, g_DepthGenerator);
 	g_pFlowRouter = new XnVFlowRouter();
