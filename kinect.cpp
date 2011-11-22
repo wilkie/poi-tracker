@@ -42,6 +42,7 @@ bool Kinect::initialize() {
 	g_GestureGenerator.RegisterToGestureReadyForNextIntermediateStage(&Kinect::gestureReadyForNextIntermediateCallback, this, hGestureReadyForNextIntermediateStage);
 	g_GestureGenerator.RegisterGestureCallbacks(NULL, &Kinect::gestureProgressCallback, this, hGestureProgress);
 
+	// NITE Initialization
 	g_pSessionManager = new XnVSessionManager();
 	rc = g_pSessionManager->Initialize(&g_Context, "Click,Wave", "RaiseHand");
 	if (has_failed(rc, "SessionManager::Initialize")) {
@@ -117,13 +118,23 @@ void Kinect::gestureReadyForNextIntermediateCallback(xn::GestureGenerator &gener
 }
 
 void Kinect::focusProgress(const XnChar* strFocus, const XnPoint3D& ptPosition, XnFloat fProgress, void* UserCxt) {
+	Kinect* k = (Kinect*)UserCxt;
+	printf("NITE %s: Focus Progress (%f, %f, %f: %f)\n",
+		strFocus, ptPosition.X, ptPosition.Y, ptPosition.Z, fProgress);
 }
 
 void Kinect::sessionStarting(const XnPoint3D& ptPosition, void* UserCxt) {
+	Kinect* k = (Kinect*)UserCxt;
+	printf("NITE : Session Starting (%f, %f, %f)\n",
+		ptPosition.X, ptPosition.Y, ptPosition.Z);
 }
 
 void Kinect::sessionEnding(void* UserCxt) {
+	Kinect* k = (Kinect*)UserCxt;
+	printf("NITE : Session Ending\n");
 }
 
 void Kinect::noHands(void* UserCxt) {
+	Kinect* k = (Kinect*)UserCxt;
+	printf("NITE : No Hands\n");
 }
