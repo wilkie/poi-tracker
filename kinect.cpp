@@ -61,6 +61,12 @@ bool Kinect::initialize() {
 		return false;
 	}
 
+	XnMapOutputMode mode;
+        g_DepthGenerator.GetMapOutputMode(mode);
+
+	_width = mode.nXRes;
+	_height = mode.nYRes;
+
 	return true;
 }
 
@@ -137,4 +143,12 @@ void Kinect::sessionEnding(void* UserCxt) {
 void Kinect::noHands(void* UserCxt) {
 	Kinect* k = (Kinect*)UserCxt;
 	printf("NITE : No Hands\n");
+}
+
+unsigned int Kinect::width() {
+	return this->_width;
+}
+
+unsigned int Kinect::height() {
+	return this->_height;
 }

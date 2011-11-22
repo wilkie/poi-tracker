@@ -13,14 +13,17 @@
 // OpenGL
 #include <GL/gl.h>
 
-Canvas::Canvas() {
+Canvas::Canvas(unsigned int width, unsigned int height) {
 	// Create a window, initialize some GL shenanigans
 	int argc = 0;
 	const char* argv[] = {"./foo"};
 
+	this->width = width;
+	this->height = height;
+
 	glutInit(&argc, (char**)argv);
 	glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH);
-	glutInitWindowSize(720, 480);
+	glutInitWindowSize(width, height);
 	glutCreateWindow("Poi-tracker");
 
 	glDisable(GL_DEPTH_TEST);

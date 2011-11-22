@@ -1,8 +1,8 @@
 #include "window.h"
 
-Window::Window() {
+Window::Window(unsigned int width, unsigned int height) {
 	// Initialize GLUT
-	canvas = new Canvas();
+	canvas = new Canvas(width, height);
 
 	// Bind to input devices
 

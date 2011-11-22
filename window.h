@@ -8,7 +8,7 @@
 class Window {
 public:
 
-	Window();
+	Window(unsigned int width, unsigned int height);
 
 	InputHandler* windowHandler();
 	Canvas* windowCanvas();

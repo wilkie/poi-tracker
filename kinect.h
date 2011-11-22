@@ -16,7 +16,13 @@ public:
 	bool initialize();
 	void cleanup();
 
+	unsigned int width();
+	unsigned int height();
+
 private:
+	unsigned int _width;
+	unsigned int _height;
+
 	// OpenNI
 	xn::EnumerationErrors errors;
 
