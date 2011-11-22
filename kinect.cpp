@@ -58,7 +58,7 @@ bool Kinect::initialize() {
 	g_pSessionManager->AddListener(g_pFlowRouter);
 
 	g_pDrawer->RegisterNoPoints(NULL, noHands);
-	//g_pDrawer->SetDepthMap(true);
+	g_pDrawer->SetDepthMap(true);
 
 	rc = g_Context.StartGeneratingAll();
 	if (has_failed(rc, "StartGenerating")) {

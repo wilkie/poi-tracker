@@ -48,6 +48,8 @@ void Canvas::clear() {
 
 	// Set up ortho mode
 	glOrtho(0, width, height, 0, -1.0, 1.0);
+
+	glDisable(GL_TEXTURE_2D);
 }
 
 void Canvas::swap() {
