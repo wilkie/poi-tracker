@@ -4,9 +4,10 @@
 
 Presenter* Presenter::self;
 
-Presenter::Presenter(Canvas* c) {
+Presenter::Presenter(Canvas* c, Task* t) {
 	// Store the canvas
 	canvas = c;
+	task = t;
 
 	// Store ourself
 	self = this;
@@ -18,6 +19,8 @@ Presenter::Presenter(Canvas* c) {
 
 void Presenter::draw() {
 	canvas->clear();
+
+	task->run();
 
 	canvas->swap();
 }
