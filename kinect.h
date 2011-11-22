@@ -22,6 +22,8 @@ public:
 	unsigned int width();
 	unsigned int height();
 
+	PointDrawer* pointDrawer();
+
 private:
 	unsigned int _width;
 	unsigned int _height;

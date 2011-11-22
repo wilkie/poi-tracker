@@ -156,3 +156,7 @@ unsigned int Kinect::width() {
 unsigned int Kinect::height() {
 	return this->_height;
 }
+
+PointDrawer* Kinect::pointDrawer() {
+	return g_pDrawer;
+}
