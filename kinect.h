@@ -10,6 +10,9 @@
 // NITE
 #include <nite/XnVNite.h>
 
+// Drawer
+#include "point_drawer.h"
+
 class Kinect {
 public:
 	Kinect();
@@ -35,6 +38,9 @@ private:
 	// NITE
 	XnVSessionManager* g_pSessionManager;
 	XnVFlowRouter* g_pFlowRouter;
+
+	// Drawer
+	PointDrawer* g_pDrawer;
 
 	bool has_failed(XnStatus rc, const char* msg);
 	bool has_errors(XnStatus rc, xn::EnumerationErrors errors, const char* msg);
