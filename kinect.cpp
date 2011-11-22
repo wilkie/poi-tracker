@@ -160,3 +160,13 @@ unsigned int Kinect::height() {
 PointDrawer* Kinect::pointDrawer() {
 	return g_pDrawer;
 }
+
+void Kinect::update() {
+	// Read next available data
+	g_Context.WaitOneUpdateAll(g_DepthGenerator);
+
+	// Update NITE tree
+	g_pSessionManager->Update(&g_Context);
+
+//	PrintSessionState(g_SessionState);
+}

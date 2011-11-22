@@ -10,9 +10,7 @@ int main(int argc, char* argv[]) {
 		return -1;
 	}
 
-	Task* t = new Task(k);
-
-	Window* w = new Window(k->width(), k->height(), t);
+	Window* w = new Window(k->width(), k->height(), k);
 	Presenter* p = w->windowPresenter();
 
 	p->run();

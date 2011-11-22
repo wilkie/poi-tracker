@@ -1,6 +1,6 @@
 #include "window.h"
 
-Window::Window(unsigned int width, unsigned int height, Task* t) {
+Window::Window(unsigned int width, unsigned int height, Kinect* k) {
 	// Initialize GLUT
 	canvas = new Canvas(width, height);
 
@@ -8,7 +8,7 @@ Window::Window(unsigned int width, unsigned int height, Task* t) {
 	handler = new InputHandler();
 
 	// Create a Presenter
-	presenter = new Presenter(canvas, t);
+	presenter = new Presenter(canvas, k);
 }
 
 InputHandler* Window::windowHandler() {

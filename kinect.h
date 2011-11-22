@@ -19,6 +19,8 @@ public:
 	bool initialize();
 	void cleanup();
 
+	void update();
+
 	unsigned int width();
 	unsigned int height();
 

@@ -2,11 +2,11 @@
 #define PRESENTER_H
 
 #include "canvas.h"
-#include "task.h"
+#include "kinect.h"
 
 class Presenter {
 public:
-	Presenter(Canvas* c, Task* t);
+	Presenter(Canvas* c, Kinect* t);
 
 	void draw();
 	void run();
@@ -14,7 +14,7 @@ public:
 private:
 
 	Canvas* canvas;
-	Task* task;
+	Kinect* kinect;
 	static Presenter* self;
 
 	static void glutDisplay();

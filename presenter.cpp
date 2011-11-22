@@ -4,10 +4,10 @@
 
 Presenter* Presenter::self;
 
-Presenter::Presenter(Canvas* c, Task* t) {
+Presenter::Presenter(Canvas* c, Kinect* k) {
 	// Store the canvas
 	canvas = c;
-	task = t;
+	kinect = k;
 
 	// Store ourself
 	self = this;
@@ -20,7 +20,7 @@ Presenter::Presenter(Canvas* c, Task* t) {
 void Presenter::draw() {
 	canvas->clear();
 
-	task->run();
+	kinect->update();
 
 	canvas->swap();
 }

@@ -8,7 +8,7 @@
 class Window {
 public:
 
-	Window(unsigned int width, unsigned int height, Task* t);
+	Window(unsigned int width, unsigned int height, Kinect* k);
 
 	InputHandler* windowHandler();
 	Canvas* windowCanvas();
