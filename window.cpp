@@ -5,6 +5,7 @@ Window::Window(unsigned int width, unsigned int height) {
 	canvas = new Canvas(width, height);
 
 	// Bind to input devices
+	handler = new InputHandler();
 
 	// Create a Presenter
 	presenter = new Presenter(canvas);
