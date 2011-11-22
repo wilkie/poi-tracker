@@ -21,6 +21,7 @@ void Presenter::draw() {
 	canvas->clear();
 
 	kinect->update();
+	kinect->pointDrawer()->Draw();
 
 	canvas->swap();
 }
