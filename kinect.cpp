@@ -51,7 +51,7 @@ bool Kinect::initialize() {
 
 	g_pSessionManager->RegisterSession(this, &Kinect::sessionStarting, &Kinect::sessionEnding, &Kinect::focusProgress);
 
-	g_pDrawer = new PointDrawer(20, g_DepthGenerator);
+	g_pDrawer = new PointDrawer(20, g_DepthGenerator, g_ImageGenerator);
 	g_pFlowRouter = new XnVFlowRouter();
 	g_pFlowRouter->SetActive(g_pDrawer);
 	

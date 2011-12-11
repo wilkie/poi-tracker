@@ -36,6 +36,7 @@ private:
 	xn::Context g_Context;
 	xn::ScriptNode g_ScriptNode;
 	xn::DepthGenerator g_DepthGenerator;
+	xn::ImageGenerator g_ImageGenerator;
 	xn::HandsGenerator g_HandsGenerator;
 	xn::GestureGenerator g_GestureGenerator;
 

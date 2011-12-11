@@ -10,7 +10,7 @@
 class PointDrawer : public XnVPointControl {
 public:
 
-	PointDrawer(XnUInt32 nHistorySize, xn::DepthGenerator depthGenerator);
+	PointDrawer(XnUInt32 nHistorySize, xn::DepthGenerator depthGenerator, xn::ImageGenerator imageGenerator);
 	virtual ~PointDrawer();
 
 	void Update(XnVMessage* pMessage);
@@ -35,6 +35,7 @@ protected:
 
 	// Source of the depth map
 	xn::DepthGenerator m_DepthGenerator;
+	xn::ImageGenerator m_ImageGenerator;
 	XnFloat* m_pfPositionBuffer;
 
 	XnBool m_bDrawDM;
