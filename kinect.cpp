@@ -22,6 +22,11 @@ bool Kinect::initialize() {
 		return false;
 	}
 
+//	rc = g_Context.FindExistingNode(XN_NODE_TYPE_IMAGE, g_ImageGenerator);
+//	if (has_failed(rc, "Find image generator")) {
+//		return false;
+//	}
+
 	rc = g_Context.FindExistingNode(XN_NODE_TYPE_HANDS, g_HandsGenerator);
 	if (has_failed(rc, "Find hands generator")) {
 		return false;

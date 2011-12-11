@@ -121,6 +121,71 @@ void DrawTexture(float topLeftX, float topLeftY, float bottomRightX, float botto
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 }
 
+void DrawImage(const xn::ImageMetaData& im) {
+	static bool bInitialized = false;	
+	static GLuint imageTexID;
+	static unsigned char* pImageTexBuf;
+	static int texWidth, texHeight;
+
+	float topLeftX;
+	float topLeftY;
+	float bottomRightY;
+	float bottomRightX;
+	float texXpos;
+	float texYpos;
+
+	if(!bInitialized)
+	{
+		XnUInt16 nXRes = im.XRes();
+		XnUInt16 nYRes = im.YRes();
+		printf("%d %d\n", nXRes, nYRes);
+		texWidth =  getClosestPowerOfTwo(nXRes);
+		texHeight = getClosestPowerOfTwo(nYRes);
+
+		imageTexID = initTexture((void**)&pImageTexBuf, texWidth, texHeight) ;
+
+		bInitialized = true;
+
+		topLeftX = nXRes;
+		topLeftY = 0;
+		bottomRightY = nYRes;
+		bottomRightX = 0;
+		texXpos =(float)nXRes/texWidth;
+		texYpos  =(float)nYRes/texHeight;
+
+		memset(texcoords, 0, 8*sizeof(float));
+		texcoords[0] = texXpos, texcoords[1] = texYpos, texcoords[2] = texXpos, texcoords[7] = texYpos;
+	}
+
+	unsigned char* pDestImage = pImageTexBuf;
+	const XnRGB24Pixel* pImage = im.RGB24Data();
+
+	unsigned int nX = 0;
+	unsigned int nY = 0;
+	XnUInt16 g_nXRes = im.XRes();
+	XnUInt16 g_nYRes = im.YRes();
+	
+	for (nY=0; nY<g_nYRes; nY++) {
+		for (nX=0; nX<g_nXRes; nX++) {
+			pDestImage[0] = 255; //(*pImage).nBlue;
+			pDestImage[1] = 200; // (*pImage).nGreen;
+			pDestImage[2] = 188; //(*pImage).nRed;
+			pDestImage+=3;
+			pImage++;
+		}
+	}
+
+	glBindTexture(GL_TEXTURE_2D, imageTexID);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, texWidth, texHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, pImageTexBuf);
+
+	// Display the OpenGL texture map
+	glColor4f(0.5,0.5,0.5,1);
+
+	glEnable(GL_TEXTURE_2D);
+	DrawTexture(im.XRes(), im.YRes(), 0, 0);	
+	glDisable(GL_TEXTURE_2D);
+}
+
 void DrawDepthMap(const xn::DepthMetaData& dm)
 {
 	static bool bInitialized = false;	
@@ -347,13 +412,19 @@ void PointDrawer::Update(XnVMessage* pMessage)
 	// PointControl's Update calls all callbacks for each hand
 	XnVPointControl::Update(pMessage);
 
-	if (m_bDrawDM)
-	{
+	if (m_bDrawDM) {
 		// Draw depth map
 		xn::DepthMetaData depthMD;
 		m_DepthGenerator.GetMetaData(depthMD);
 		DrawDepthMap(depthMD);
 	}
+	else {
+		// Draw image map
+		xn::ImageMetaData imageMD;
+		//m_ImageGenerator.GetMetaData(imageMD);
+		//DrawImage(imageMD);
+	}
+
 #ifdef USE_GLUT
 	if (m_bFrameID)
 	{
