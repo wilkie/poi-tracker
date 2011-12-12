@@ -2,13 +2,24 @@
 #define KINECT_H
 
 // OpenNI
-#include <ni/XnOpenNI.h>
-#include <ni/XnCppWrapper.h>
-#include <ni/XnHash.h>
-#include <ni/XnLog.h>
+#ifdef _WIN32
+	#include <XnOpenNI.h>
+	#include <XnCppWrapper.h>
+	#include <XnHash.h>
+	#include <XnLog.h>
+#else
+	#include <ni/XnOpenNI.h>
+	#include <ni/XnCppWrapper.h>
+	#include <ni/XnHash.h>
+	#include <ni/XnLog.h>
+#endif
 
 // NITE
-#include <nite/XnVNite.h>
+#ifdef _WIN32
+	#include <XnVNite.h>
+#else
+	#include <nite/XnVNite.h>
+#endif
 
 // Drawer
 #include "point_drawer.h"
@@ -50,16 +61,16 @@ private:
 	bool has_failed(XnStatus rc, const char* msg);
 	bool has_errors(XnStatus rc, xn::EnumerationErrors errors, const char* msg);
 
-	static void touchingCallback(xn::HandTouchingFOVEdgeCapability&, XnUserID, const XnPoint3D*, XnFloat, XnDirection, void*);
-	static void gestureIntermediateCallback(xn::GestureGenerator&, const XnChar*, const XnPoint3D*, void*);
-	static void gestureProgressCallback(xn::GestureGenerator&, const XnChar*, const XnPoint3D*, XnFloat, void*);
-	static void gestureReadyForNextIntermediateCallback(xn::GestureGenerator&, const XnChar*, const XnPoint3D*, void*);
+	static void __stdcall touchingCallback(xn::HandTouchingFOVEdgeCapability&, XnUserID, const XnPoint3D*, XnFloat, XnDirection, void*);
+	static void __stdcall gestureIntermediateCallback(xn::GestureGenerator&, const XnChar*, const XnPoint3D*, void*);
+	static void __stdcall gestureProgressCallback(xn::GestureGenerator&, const XnChar*, const XnPoint3D*, XnFloat, void*);
+	static void __stdcall gestureReadyForNextIntermediateCallback(xn::GestureGenerator&, const XnChar*, const XnPoint3D*, void*);
 
 	// NITE Callbacks
-	static void focusProgress(const XnChar* strFocus, const XnPoint3D& ptPosition, XnFloat fProgress, void* UserCxt);
-	static void sessionStarting(const XnPoint3D& ptPosition, void* UserCxt);
-	static void sessionEnding(void* UserCxt);
-	static void noHands(void* UserCxt);
+	static void __stdcall focusProgress(const XnChar* strFocus, const XnPoint3D& ptPosition, XnFloat fProgress, void* UserCxt);
+	static void __stdcall sessionStarting(const XnPoint3D& ptPosition, void* UserCxt);
+	static void __stdcall sessionEnding(void* UserCxt);
+	static void __stdcall noHands(void* UserCxt);
 };
 
 #endif

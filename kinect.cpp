@@ -39,13 +39,13 @@ bool Kinect::initialize() {
 
 	XnCallbackHandle h;
 	if (g_HandsGenerator.IsCapabilitySupported(XN_CAPABILITY_HAND_TOUCHING_FOV_EDGE)) {
-		g_HandsGenerator.GetHandTouchingFOVEdgeCap().RegisterToHandTouchingFOVEdge(&Kinect::touchingCallback, this, h);
+		g_HandsGenerator.GetHandTouchingFOVEdgeCap().RegisterToHandTouchingFOVEdge((xn::HandTouchingFOVEdgeCapability::HandTouchingFOVEdge)&Kinect::touchingCallback, this, h);
 	}
 
 	XnCallbackHandle hGestureIntermediateStageCompleted, hGestureProgress, hGestureReadyForNextIntermediateStage;
-	g_GestureGenerator.RegisterToGestureIntermediateStageCompleted(&Kinect::gestureIntermediateCallback, this, hGestureIntermediateStageCompleted);
-	g_GestureGenerator.RegisterToGestureReadyForNextIntermediateStage(&Kinect::gestureReadyForNextIntermediateCallback, this, hGestureReadyForNextIntermediateStage);
-	g_GestureGenerator.RegisterGestureCallbacks(NULL, &Kinect::gestureProgressCallback, this, hGestureProgress);
+	g_GestureGenerator.RegisterToGestureIntermediateStageCompleted((xn::GestureGenerator::GestureIntermediateStageCompleted)&Kinect::gestureIntermediateCallback, this, hGestureIntermediateStageCompleted);
+	g_GestureGenerator.RegisterToGestureReadyForNextIntermediateStage((xn::GestureGenerator::GestureReadyForNextIntermediateStage)&Kinect::gestureReadyForNextIntermediateCallback, this, hGestureReadyForNextIntermediateStage);
+	g_GestureGenerator.RegisterGestureCallbacks(NULL, (xn::GestureGenerator::GestureProgress)&Kinect::gestureProgressCallback, this, hGestureProgress);
 
 	// NITE Initialization
 	g_pSessionManager = new XnVSessionManager();
@@ -54,7 +54,10 @@ bool Kinect::initialize() {
 		return false;
 	}
 
-	g_pSessionManager->RegisterSession(this, &Kinect::sessionStarting, &Kinect::sessionEnding, &Kinect::focusProgress);
+	g_pSessionManager->RegisterSession(this, 
+		(XnVSessionListener::OnSessionStartCB)&Kinect::sessionStarting, 
+		(XnVSessionListener::OnSessionEndCB)&Kinect::sessionEnding, 
+		(XnVSessionListener::OnFocusStartDetectedCB)&Kinect::focusProgress);
 
 	g_pDrawer = new PointDrawer(20, g_DepthGenerator, g_ImageGenerator);
 	g_pFlowRouter = new XnVFlowRouter();
@@ -62,7 +65,7 @@ bool Kinect::initialize() {
 	
 	g_pSessionManager->AddListener(g_pFlowRouter);
 
-	g_pDrawer->RegisterNoPoints(NULL, noHands);
+	g_pDrawer->RegisterNoPoints(NULL, (XnVPointControl::NoPointsCB)&noHands);
 	g_pDrawer->SetDepthMap(true);
 
 	rc = g_Context.StartGeneratingAll();
@@ -109,47 +112,47 @@ bool Kinect::has_errors(XnStatus rc, xn::EnumerationErrors errors, const char* m
 
 // Callbacks
 
-void Kinect::touchingCallback(xn::HandTouchingFOVEdgeCapability &generator, XnUserID id, const XnPoint3D* pPosition, XnFloat fTime, XnDirection eDir, void* pCookie) {
+void __stdcall Kinect::touchingCallback(xn::HandTouchingFOVEdgeCapability &generator, XnUserID id, const XnPoint3D* pPosition, XnFloat fTime, XnDirection eDir, void* pCookie) {
 	Kinect* k = (Kinect*)pCookie;
 	//k->g_pDrawer->SetTouchingFOVEdge(id);
 }
 
-void Kinect::gestureIntermediateCallback(xn::GestureGenerator &generator, const XnChar* strGesture, const XnPoint3D* pPosition, void* pCookie) {
+void __stdcall Kinect::gestureIntermediateCallback(xn::GestureGenerator &generator, const XnChar* strGesture, const XnPoint3D* pPosition, void* pCookie) {
 	Kinect* k = (Kinect*)pCookie;
 	printf("Gesture %s: Intermediate stage complete (%f, %f, %f)\n",
 		strGesture, pPosition->X, pPosition->Y, pPosition->Z);
 }
 
-void Kinect::gestureProgressCallback(xn::GestureGenerator &generator, const XnChar* strGesture, const XnPoint3D* pPosition, XnFloat fProgress, void* pCookie) {
+void __stdcall Kinect::gestureProgressCallback(xn::GestureGenerator &generator, const XnChar* strGesture, const XnPoint3D* pPosition, XnFloat fProgress, void* pCookie) {
 	Kinect* k = (Kinect*)pCookie;
 	printf("Gesture %s: progress: %f (%f, %f, %f)\n",
 		strGesture, fProgress, pPosition->X, pPosition->Y, pPosition->Z);
 }
 
-void Kinect::gestureReadyForNextIntermediateCallback(xn::GestureGenerator &generator, const XnChar* strGesture, const XnPoint3D* pPosition, void* pCookie) {
+void __stdcall Kinect::gestureReadyForNextIntermediateCallback(xn::GestureGenerator &generator, const XnChar* strGesture, const XnPoint3D* pPosition, void* pCookie) {
 	Kinect* k = (Kinect*)pCookie;
 	printf("Gesture %s: Ready for next intermediate stage (%f, %f, %f)\n",
 		strGesture, pPosition->X, pPosition->Y, pPosition->Z);
 }
 
-void Kinect::focusProgress(const XnChar* strFocus, const XnPoint3D& ptPosition, XnFloat fProgress, void* UserCxt) {
+void __stdcall Kinect::focusProgress(const XnChar* strFocus, const XnPoint3D& ptPosition, XnFloat fProgress, void* UserCxt) {
 	Kinect* k = (Kinect*)UserCxt;
 	printf("NITE %s: Focus Progress (%f, %f, %f: %f)\n",
 		strFocus, ptPosition.X, ptPosition.Y, ptPosition.Z, fProgress);
 }
 
-void Kinect::sessionStarting(const XnPoint3D& ptPosition, void* UserCxt) {
+void __stdcall Kinect::sessionStarting(const XnPoint3D& ptPosition, void* UserCxt) {
 	Kinect* k = (Kinect*)UserCxt;
 	printf("NITE : Session Starting (%f, %f, %f)\n",
 		ptPosition.X, ptPosition.Y, ptPosition.Z);
 }
 
-void Kinect::sessionEnding(void* UserCxt) {
+void __stdcall Kinect::sessionEnding(void* UserCxt) {
 	Kinect* k = (Kinect*)UserCxt;
 	printf("NITE : Session Ending\n");
 }
 
-void Kinect::noHands(void* UserCxt) {
+void __stdcall Kinect::noHands(void* UserCxt) {
 	Kinect* k = (Kinect*)UserCxt;
 	printf("NITE : No Hands\n");
 }

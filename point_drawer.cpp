@@ -1,9 +1,9 @@
 #include "point_drawer.h"
 
 #if (XN_PLATFORM == XN_PLATFORM_MACOSX)
-#include <GLUT/glut.h>
+	#include <GLUT/glut.h>
 #else
-#include <GL/glut.h>
+	#include <GL/glut.h>
 #endif
 
 PointDrawer::PointDrawer(XnUInt32 nHistory, xn::DepthGenerator depthGenerator, xn::ImageGenerator imageGenerator)
