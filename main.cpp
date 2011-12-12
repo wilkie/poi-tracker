@@ -5,7 +5,12 @@
 int main(int argc, char* argv[]) {
 	Kinect* k = new Kinect();
 
-	if (!k->initialize()) {
+	char* xml_path = "poi-tracker.xml";
+	if (argc > 1) {
+		xml_path = argv[1];
+	}
+
+	if (!k->initialize(xml_path)) {
 		printf("There were errors initializing the Kinect device.\n");
 		return -1;
 	}

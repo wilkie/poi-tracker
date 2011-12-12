@@ -3,17 +3,19 @@
 Kinect::Kinect() {
 }
 
-bool Kinect::initialize() {
+bool Kinect::initialize(char* xml_path) {
 	XnStatus rc = XN_STATUS_OK;
 
 	// Initialize OpenNI
-	rc = g_Context.InitFromXmlFile("poi-tracker.xml", g_ScriptNode, &errors);
+	rc = g_Context.InitFromXmlFile(xml_path, g_ScriptNode, &errors);
 
 	if (has_errors(rc, errors, "InitFromXmlFile")) {
+		printf("File to load was: %s\n", xml_path);
 		return false;
 	}
 
 	if (has_failed(rc, "InitFromXmlFile")) {
+		printf("File to load was: %s\n", xml_path);
 		return false;
 	}
 
@@ -22,10 +24,10 @@ bool Kinect::initialize() {
 		return false;
 	}
 
-//	rc = g_Context.FindExistingNode(XN_NODE_TYPE_IMAGE, g_ImageGenerator);
-//	if (has_failed(rc, "Find image generator")) {
-//		return false;
-//	}
+	rc = g_Context.FindExistingNode(XN_NODE_TYPE_IMAGE, g_ImageGenerator);
+	if (has_failed(rc, "Find image generator")) {
+		return false;
+	}
 
 	rc = g_Context.FindExistingNode(XN_NODE_TYPE_HANDS, g_HandsGenerator);
 	if (has_failed(rc, "Find hands generator")) {

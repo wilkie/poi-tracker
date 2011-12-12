@@ -27,7 +27,7 @@
 class Kinect {
 public:
 	Kinect();
-	bool initialize();
+	bool initialize(char* xml_path);
 	void cleanup();
 
 	void update();
