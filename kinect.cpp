@@ -39,13 +39,17 @@ bool Kinect::initialize() {
 
 	XnCallbackHandle h;
 	if (g_HandsGenerator.IsCapabilitySupported(XN_CAPABILITY_HAND_TOUCHING_FOV_EDGE)) {
-		g_HandsGenerator.GetHandTouchingFOVEdgeCap().RegisterToHandTouchingFOVEdge((xn::HandTouchingFOVEdgeCapability::HandTouchingFOVEdge)&Kinect::touchingCallback, this, h);
+		g_HandsGenerator.GetHandTouchingFOVEdgeCap().RegisterToHandTouchingFOVEdge(
+			&Kinect::touchingCallback, this, h);
 	}
 
 	XnCallbackHandle hGestureIntermediateStageCompleted, hGestureProgress, hGestureReadyForNextIntermediateStage;
-	g_GestureGenerator.RegisterToGestureIntermediateStageCompleted((xn::GestureGenerator::GestureIntermediateStageCompleted)&Kinect::gestureIntermediateCallback, this, hGestureIntermediateStageCompleted);
-	g_GestureGenerator.RegisterToGestureReadyForNextIntermediateStage((xn::GestureGenerator::GestureReadyForNextIntermediateStage)&Kinect::gestureReadyForNextIntermediateCallback, this, hGestureReadyForNextIntermediateStage);
-	g_GestureGenerator.RegisterGestureCallbacks(NULL, (xn::GestureGenerator::GestureProgress)&Kinect::gestureProgressCallback, this, hGestureProgress);
+	g_GestureGenerator.RegisterToGestureIntermediateStageCompleted(
+		&Kinect::gestureIntermediateCallback, this, hGestureIntermediateStageCompleted);
+	g_GestureGenerator.RegisterToGestureReadyForNextIntermediateStage(
+		&Kinect::gestureReadyForNextIntermediateCallback, this, hGestureReadyForNextIntermediateStage);
+	g_GestureGenerator.RegisterGestureCallbacks(NULL, 
+		&Kinect::gestureProgressCallback, this, hGestureProgress);
 
 	// NITE Initialization
 	g_pSessionManager = new XnVSessionManager();
@@ -55,9 +59,9 @@ bool Kinect::initialize() {
 	}
 
 	g_pSessionManager->RegisterSession(this, 
-		(XnVSessionListener::OnSessionStartCB)&Kinect::sessionStarting, 
-		(XnVSessionListener::OnSessionEndCB)&Kinect::sessionEnding, 
-		(XnVSessionListener::OnFocusStartDetectedCB)&Kinect::focusProgress);
+		&Kinect::sessionStarting, 
+		&Kinect::sessionEnding, 
+		&Kinect::focusProgress);
 
 	g_pDrawer = new PointDrawer(20, g_DepthGenerator, g_ImageGenerator);
 	g_pFlowRouter = new XnVFlowRouter();
@@ -65,7 +69,7 @@ bool Kinect::initialize() {
 	
 	g_pSessionManager->AddListener(g_pFlowRouter);
 
-	g_pDrawer->RegisterNoPoints(NULL, (XnVPointControl::NoPointsCB)&noHands);
+	g_pDrawer->RegisterNoPoints(NULL, &noHands);
 	g_pDrawer->SetDepthMap(true);
 
 	rc = g_Context.StartGeneratingAll();
