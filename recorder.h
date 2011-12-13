@@ -23,11 +23,12 @@
 
 class Recorder {
 public:
-	Recorder();
+	Recorder(char* path, int width, int height);
 	void record(XnPoint3D pts[13]);
 
 private:
 	FILE* _output;
+	unsigned int _last_time;
 };
 
 #endif

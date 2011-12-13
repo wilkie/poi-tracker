@@ -81,9 +81,7 @@ bool Kinect::initialize(char* xml_path) {
 
 	// Initialize OpenNI
 	rc = g_Context.InitFromXmlFile(xml_path, g_ScriptNode, &errors);
-
-	_recorder = new Recorder("recording.poi");
-
+	
 	if (has_errors(rc, errors, "InitFromXmlFile")) {
 		printf("File to load was: %s\n", xml_path);
 		return false;
@@ -139,6 +137,14 @@ bool Kinect::initialize(char* xml_path) {
 		&Kinect::sessionStarting, 
 		&Kinect::sessionEnding, 
 		&Kinect::focusProgress);
+	
+	XnMapOutputMode mode;
+	g_DepthGenerator.GetMapOutputMode(mode);
+
+	_width = mode.nXRes;
+	_height = mode.nYRes;
+
+	_recorder = new Recorder("recording.poi", _width, _height);
 
 	g_pDrawer = new PointDrawer(20, g_DepthGenerator, g_ImageGenerator, _recorder);
 	g_pFlowRouter = new XnVFlowRouter();
@@ -202,12 +208,6 @@ bool Kinect::initialize(char* xml_path) {
 	if (has_failed(rc, "StartGenerating")) {
 		return false;
 	}
-
-	XnMapOutputMode mode;
-	g_DepthGenerator.GetMapOutputMode(mode);
-
-	_width = mode.nXRes;
-	_height = mode.nYRes;
 
 	return true;
 }

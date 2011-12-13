@@ -35,8 +35,8 @@ void UserDrawer::draw() {
 		for(int i = 0; i < 15; i++) {
 			userGenerator.GetSkeletonCap().GetSkeletonJointPosition(user, joints[i], joint);
 			pts[i] = joint.position;
-			depthGenerator.ConvertRealWorldToProjective(15, pts, pts);
 		}
+		depthGenerator.ConvertRealWorldToProjective(15, pts, pts);
 
 		recorder->record(pts);
 
