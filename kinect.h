@@ -40,6 +40,14 @@ public:
 private:
 	unsigned int _width;
 	unsigned int _height;
+	
+	XnBool g_bNeedPose;
+	char g_strPose[20];
+	XnBool g_bDrawBackground;
+	XnBool g_bDrawPixels;
+	XnBool g_bDrawSkeleton;
+	XnBool g_bPrintID;
+	XnBool g_bPrintState;
 
 	// OpenNI
 	xn::EnumerationErrors errors;
@@ -49,6 +57,7 @@ private:
 	xn::DepthGenerator g_DepthGenerator;
 	xn::ImageGenerator g_ImageGenerator;
 	xn::HandsGenerator g_HandsGenerator;
+	xn::UserGenerator g_UserGenerator;
 	xn::GestureGenerator g_GestureGenerator;
 
 	// NITE
@@ -71,6 +80,12 @@ private:
 	static void __stdcall sessionStarting(const XnPoint3D& ptPosition, void* UserCxt);
 	static void __stdcall sessionEnding(void* UserCxt);
 	static void __stdcall noHands(void* UserCxt);
+
+	static void XN_CALLBACK_TYPE userCalibrationComplete(xn::SkeletonCapability& capability, XnUserID nId, XnCalibrationStatus eStatus, void* pCookie);
+	static void XN_CALLBACK_TYPE userCalibrationStart(xn::SkeletonCapability& capability, XnUserID nId, void* pCookie);
+	static void XN_CALLBACK_TYPE userPoseDetected(xn::PoseDetectionCapability& capability, const XnChar* strPose, XnUserID nId, void* pCookie);
+	static void XN_CALLBACK_TYPE userNew(xn::UserGenerator& generator, XnUserID nId, void* pCookie);
+	static void XN_CALLBACK_TYPE userLost(xn::UserGenerator& generator, XnUserID nId, void* pCookie);
 };
 
 #endif

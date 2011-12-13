@@ -3,8 +3,81 @@
 Kinect::Kinect() {
 }
 
+// Callback: New user was detected
+void XN_CALLBACK_TYPE Kinect::userNew(xn::UserGenerator& generator, XnUserID nId, void* pCookie) {
+	Kinect* k = (Kinect*)pCookie;
+	XnUInt32 epochTime = 0;
+	xnOSGetEpochTime(&epochTime);
+	printf("%d New User %d\n", epochTime, nId);
+	// New user found
+	if (k->g_bNeedPose)
+	{
+		k->g_UserGenerator.GetPoseDetectionCap().StartPoseDetection(k->g_strPose, nId);
+	}
+	else
+	{
+		k->g_UserGenerator.GetSkeletonCap().RequestCalibration(nId, TRUE);
+	}
+}
+// Callback: An existing user was lost
+void XN_CALLBACK_TYPE Kinect::userLost(xn::UserGenerator& generator, XnUserID nId, void* pCookie) {
+	Kinect* k = (Kinect*)pCookie;
+	XnUInt32 epochTime = 0;
+	xnOSGetEpochTime(&epochTime);
+	printf("%d Lost user %d\n", epochTime, nId);	
+}
+// Callback: Detected a pose
+void XN_CALLBACK_TYPE Kinect::userPoseDetected(xn::PoseDetectionCapability& capability, const XnChar* strPose, XnUserID nId, void* pCookie) {
+	Kinect* k = (Kinect*)pCookie;
+	XnUInt32 epochTime = 0;
+	xnOSGetEpochTime(&epochTime);
+	printf("%d Pose %s detected for user %d\n", epochTime, strPose, nId);
+	k->g_UserGenerator.GetPoseDetectionCap().StopPoseDetection(nId);
+	k->g_UserGenerator.GetSkeletonCap().RequestCalibration(nId, TRUE);
+}
+// Callback: Started calibration
+void XN_CALLBACK_TYPE Kinect::userCalibrationStart(xn::SkeletonCapability& capability, XnUserID nId, void* pCookie) {
+	Kinect* k = (Kinect*)pCookie;
+	XnUInt32 epochTime = 0;
+	xnOSGetEpochTime(&epochTime);
+	printf("%d Calibration started for user %d\n", epochTime, nId);
+}
+// Callback: Finished calibration
+void XN_CALLBACK_TYPE Kinect::userCalibrationComplete(xn::SkeletonCapability& capability, XnUserID nId, XnCalibrationStatus eStatus, void* pCookie) {
+	Kinect* k = (Kinect*)pCookie;
+	XnUInt32 epochTime = 0;
+	xnOSGetEpochTime(&epochTime);
+	if (eStatus == XN_CALIBRATION_STATUS_OK)
+	{
+		// Calibration succeeded
+		printf("%d Calibration complete, start tracking user %d\n", epochTime, nId);		
+		k->g_UserGenerator.GetSkeletonCap().StartTracking(nId);
+	}
+	else
+	{
+		// Calibration failed
+		printf("%d Calibration failed for user %d\n", epochTime, nId);
+		if (k->g_bNeedPose)
+		{
+			k->g_UserGenerator.GetPoseDetectionCap().StartPoseDetection(k->g_strPose, nId);
+		}
+		else
+		{
+			k->g_UserGenerator.GetSkeletonCap().RequestCalibration(nId, TRUE);
+		}
+	}
+}
+
 bool Kinect::initialize(char* xml_path) {
 	XnStatus rc = XN_STATUS_OK;
+	
+	g_bNeedPose = FALSE;
+	g_strPose[0] = '\0';
+	g_bDrawBackground = TRUE;
+	g_bDrawPixels = TRUE;
+	g_bDrawSkeleton = TRUE;
+	g_bPrintID = TRUE;
+	g_bPrintState = TRUE;
 
 	// Initialize OpenNI
 	rc = g_Context.InitFromXmlFile(xml_path, g_ScriptNode, &errors);
@@ -74,13 +147,70 @@ bool Kinect::initialize(char* xml_path) {
 	g_pDrawer->RegisterNoPoints(NULL, &noHands);
 	g_pDrawer->SetDepthMap(true);
 
+	// Skeleton Tracking
+	rc = g_Context.FindExistingNode(XN_NODE_TYPE_USER, g_UserGenerator);
+	if (has_failed(rc, "Find user generator")) {
+		return false;
+	}
+	rc = g_UserGenerator.Create(g_Context);
+	if (has_failed(rc, "Find user generator")) {
+		return false;
+	}
+
+	XnCallbackHandle hUserCallbacks, hCalibrationStart, hCalibrationComplete, hPoseDetected, hCalibrationInProgress, hPoseInProgress;
+	if (!g_UserGenerator.IsCapabilitySupported(XN_CAPABILITY_SKELETON)) {
+		printf("Supplied user generator doesn't support skeleton\n");
+		return 1;
+	}
+	
+	rc = g_UserGenerator.RegisterUserCallbacks(&Kinect::userNew, &Kinect::userLost, this, hUserCallbacks);
+	if (has_failed(rc, "Register to user callbacks")) {
+		return false;
+	}
+
+	rc = g_UserGenerator.GetSkeletonCap().RegisterToCalibrationStart(&Kinect::userCalibrationStart, this, hCalibrationStart);
+	if (has_failed(rc, "Register to calibration start")) {
+		return false;
+	}
+	
+	rc = g_UserGenerator.GetSkeletonCap().RegisterToCalibrationComplete(&Kinect::userCalibrationComplete, this, hCalibrationComplete);
+	if (has_failed(rc, "Register to calibration complete")) {
+		return false;
+	}
+
+	if (g_UserGenerator.GetSkeletonCap().NeedPoseForCalibration()) {
+		g_bNeedPose = TRUE;
+		if (!g_UserGenerator.IsCapabilitySupported(XN_CAPABILITY_POSE_DETECTION)) {
+			printf("Pose required, but not supported\n");
+			return false;
+		}
+
+		rc = g_UserGenerator.GetPoseDetectionCap().RegisterToPoseDetected(&Kinect::userPoseDetected, this, hPoseDetected);
+		if (has_failed(rc, "Register to pose detected")) {
+			return false;
+		}
+		g_UserGenerator.GetSkeletonCap().GetCalibrationPose(g_strPose);
+	}
+
+	g_UserGenerator.GetSkeletonCap().SetSkeletonProfile(XN_SKEL_PROFILE_ALL);
+
+	/*rc = g_UserGenerator.GetSkeletonCap().RegisterToCalibrationInProgress(MyCalibrationInProgress, NULL, hCalibrationInProgress);
+	if (has_failed(rc, "Register to calibration in progress")) {
+		return false;
+	}
+
+	rc = g_UserGenerator.GetPoseDetectionCap().RegisterToPoseInProgress(MyPoseInProgress, NULL, hPoseInProgress);
+	if (has_failed(rc, "Register to pose in progress")) {
+		return false;
+	}*/
+
 	rc = g_Context.StartGeneratingAll();
 	if (has_failed(rc, "StartGenerating")) {
 		return false;
 	}
 
 	XnMapOutputMode mode;
-        g_DepthGenerator.GetMapOutputMode(mode);
+	g_DepthGenerator.GetMapOutputMode(mode);
 
 	_width = mode.nXRes;
 	_height = mode.nYRes;
