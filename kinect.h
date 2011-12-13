@@ -21,8 +21,10 @@
 	#include <nite/XnVNite.h>
 #endif
 
-// Drawer
+// Drawers
 #include "point_drawer.h"
+#include "user_drawer.h"
+#include "recorder.h"
 
 class Kinect {
 public:
@@ -36,6 +38,9 @@ public:
 	unsigned int height();
 
 	PointDrawer* pointDrawer();
+	UserDrawer* userDrawer();
+
+	Recorder* recorder();
 
 private:
 	unsigned int _width;
@@ -66,6 +71,10 @@ private:
 
 	// Drawer
 	PointDrawer* g_pDrawer;
+	UserDrawer* g_userDrawer;
+
+	// Recorder
+	Recorder* _recorder;
 
 	bool has_failed(XnStatus rc, const char* msg);
 	bool has_errors(XnStatus rc, xn::EnumerationErrors errors, const char* msg);

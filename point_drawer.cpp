@@ -6,13 +6,14 @@
 	#include <GL/glut.h>
 #endif
 
-PointDrawer::PointDrawer(XnUInt32 nHistory, xn::DepthGenerator depthGenerator, xn::ImageGenerator imageGenerator)
+PointDrawer::PointDrawer(XnUInt32 nHistory, xn::DepthGenerator depthGenerator, xn::ImageGenerator imageGenerator, Recorder* recorder)
   : XnVPointControl("PointDrawer"),
   m_nHistorySize(nHistory),
   m_DepthGenerator(depthGenerator),
   m_ImageGenerator(imageGenerator),
   m_bDrawDM(false),
-  m_bFrameID(false) {
+  m_bFrameID(false), 
+  recorder(recorder) {
 	m_pfPositionBuffer = new XnFloat[nHistory * 3];
 }
 

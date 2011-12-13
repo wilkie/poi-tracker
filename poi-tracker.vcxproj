@@ -75,6 +75,8 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="point_drawer.cpp" />
     <ClCompile Include="presenter.cpp" />
+    <ClCompile Include="recorder.cpp" />
+    <ClCompile Include="user_drawer.cpp" />
     <ClCompile Include="window.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -83,10 +85,13 @@
     <ClInclude Include="kinect.h" />
     <ClInclude Include="point_drawer.h" />
     <ClInclude Include="presenter.h" />
+    <ClInclude Include="recorder.h" />
+    <ClInclude Include="user_drawer.h" />
     <ClInclude Include="window.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="poi-tracker.xml" />
+    <None Include="recording.poi" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

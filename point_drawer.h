@@ -7,10 +7,12 @@
 #include <XnCppWrapper.h>
 #include <XnVPointControl.h>
 
+#include "recorder.h"
+
 class PointDrawer : public XnVPointControl {
 public:
 
-	PointDrawer(XnUInt32 nHistorySize, xn::DepthGenerator depthGenerator, xn::ImageGenerator imageGenerator);
+	PointDrawer(XnUInt32 nHistorySize, xn::DepthGenerator depthGenerator, xn::ImageGenerator imageGenerator, Recorder* recorder);
 	virtual ~PointDrawer();
 
 	void Update(XnVMessage* pMessage);
@@ -37,6 +39,8 @@ protected:
 	xn::DepthGenerator m_DepthGenerator;
 	xn::ImageGenerator m_ImageGenerator;
 	XnFloat* m_pfPositionBuffer;
+
+	Recorder* recorder;
 
 	XnBool m_bDrawDM;
 	XnBool m_bFrameID;

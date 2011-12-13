@@ -82,6 +82,8 @@ bool Kinect::initialize(char* xml_path) {
 	// Initialize OpenNI
 	rc = g_Context.InitFromXmlFile(xml_path, g_ScriptNode, &errors);
 
+	_recorder = new Recorder("recording.poi");
+
 	if (has_errors(rc, errors, "InitFromXmlFile")) {
 		printf("File to load was: %s\n", xml_path);
 		return false;
@@ -138,7 +140,7 @@ bool Kinect::initialize(char* xml_path) {
 		&Kinect::sessionEnding, 
 		&Kinect::focusProgress);
 
-	g_pDrawer = new PointDrawer(20, g_DepthGenerator, g_ImageGenerator);
+	g_pDrawer = new PointDrawer(20, g_DepthGenerator, g_ImageGenerator, _recorder);
 	g_pFlowRouter = new XnVFlowRouter();
 	g_pFlowRouter->SetActive(g_pDrawer);
 	
@@ -194,15 +196,7 @@ bool Kinect::initialize(char* xml_path) {
 
 	g_UserGenerator.GetSkeletonCap().SetSkeletonProfile(XN_SKEL_PROFILE_ALL);
 
-	/*rc = g_UserGenerator.GetSkeletonCap().RegisterToCalibrationInProgress(MyCalibrationInProgress, NULL, hCalibrationInProgress);
-	if (has_failed(rc, "Register to calibration in progress")) {
-		return false;
-	}
-
-	rc = g_UserGenerator.GetPoseDetectionCap().RegisterToPoseInProgress(MyPoseInProgress, NULL, hPoseInProgress);
-	if (has_failed(rc, "Register to pose in progress")) {
-		return false;
-	}*/
+	g_userDrawer = new UserDrawer(g_DepthGenerator, g_UserGenerator, _recorder);
 
 	rc = g_Context.StartGeneratingAll();
 	if (has_failed(rc, "StartGenerating")) {
@@ -303,6 +297,14 @@ unsigned int Kinect::height() {
 
 PointDrawer* Kinect::pointDrawer() {
 	return g_pDrawer;
+}
+
+UserDrawer* Kinect::userDrawer() {
+	return g_userDrawer;
+}
+
+Recorder* Kinect::recorder() {
+	return _recorder;
 }
 
 void Kinect::update() {
