@@ -17,11 +17,9 @@ PointDrawer::PointDrawer(XnUInt32 nHistory, xn::DepthGenerator depthGenerator, x
 	m_pfPositionBuffer = new XnFloat[nHistory * 3];
 }
 
-PointDrawer::~PointDrawer()
-{
+PointDrawer::~PointDrawer() {
 	std::map<XnUInt32, std::list<XnPoint3D> >::iterator iter;
-	for (iter = m_History.begin(); iter != m_History.end(); ++iter)
-	{
+	for (iter = m_History.begin(); iter != m_History.end(); ++iter) {
 		iter->second.clear();
 	}
 	m_History.clear();
@@ -29,19 +27,16 @@ PointDrawer::~PointDrawer()
 	delete [] m_pfPositionBuffer;
 }
 
-void PointDrawer::SetDepthMap(XnBool bDrawDM)
-{
+void PointDrawer::SetDepthMap(XnBool bDrawDM) {
 	m_bDrawDM = bDrawDM;
 }
 
-void PointDrawer::SetFrameID(XnBool bFrameID)
-{
+void PointDrawer::SetFrameID(XnBool bFrameID) {
 	m_bFrameID = bFrameID;
 }
 
 static XnBool bShouldPrint = false;
-void PointDrawer::OnPointCreate(const XnVHandPointContext* cxt)
-{
+void PointDrawer::OnPointCreate(const XnVHandPointContext* cxt) {
 	printf("** %d\n", cxt->nID);
 	// Create entry for the hand
 	m_History[cxt->nID].clear();
@@ -50,8 +45,7 @@ void PointDrawer::OnPointCreate(const XnVHandPointContext* cxt)
 	bShouldPrint = true;
 }
 
-void PointDrawer::OnPointUpdate(const XnVHandPointContext* cxt)
-{
+void PointDrawer::OnPointUpdate(const XnVHandPointContext* cxt) {
 	// positions are kept in projective coordinates, since they are only used for drawing
 	XnPoint3D ptProjective(cxt->ptPosition);
 
@@ -67,24 +61,21 @@ void PointDrawer::OnPointUpdate(const XnVHandPointContext* cxt)
 	bShouldPrint = false;
 }
 
-void PointDrawer::OnPointDestroy(XnUInt32 nID)
-{
+void PointDrawer::OnPointDestroy(XnUInt32 nID) {
 	// No need for the history buffer
 	m_History.erase(nID);
 }
 
 #define MAX_DEPTH 10000
 float g_pDepthHist[MAX_DEPTH];
-unsigned int getClosestPowerOfTwo(unsigned int n)
-{
+unsigned int getClosestPowerOfTwo(unsigned int n) {
 	unsigned int m = 2;
 	while(m < n) m<<=1;
 
 	return m;
 }
 
-GLuint initTexture(void** buf, int& width, int& height)
-{
+GLuint initTexture(void** buf, int& width, int& height) {
 	GLuint texID = 0;
 	glGenTextures(1,&texID);
 
@@ -100,8 +91,7 @@ GLuint initTexture(void** buf, int& width, int& height)
 }
 
 GLfloat texcoords[8];
-void DrawRectangle(float topLeftX, float topLeftY, float bottomRightX, float bottomRightY)
-{
+void DrawRectangle(float topLeftX, float topLeftY, float bottomRightX, float bottomRightY) {
 	GLfloat verts[8] = {	topLeftX, topLeftY,
 		topLeftX, bottomRightY,
 		bottomRightX, bottomRightY,
@@ -112,8 +102,8 @@ void DrawRectangle(float topLeftX, float topLeftY, float bottomRightX, float bot
 
 	glFlush();
 }
-void DrawTexture(float topLeftX, float topLeftY, float bottomRightX, float bottomRightY)
-{
+
+void DrawTexture(float topLeftX, float topLeftY, float bottomRightX, float bottomRightY) {
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	glTexCoordPointer(2, GL_FLOAT, 0, texcoords);
 
@@ -139,8 +129,7 @@ void DrawTexture(float topLeftX, float topLeftY, float bottomRightX, float botto
 
 #if (XN_PLATFORM == XN_PLATFORM_WIN32)
 
-void YUV422ToRGB888(const XnUInt8* pYUVImage, XnUInt8* pRGBAImage, XnUInt32 nYUVSize, XnUInt32 nRGBSize)
-{
+void YUV422ToRGB888(const XnUInt8* pYUVImage, XnUInt8* pRGBAImage, XnUInt32 nYUVSize, XnUInt32 nRGBSize) {
 	const XnUInt8* pYUVLast = pYUVImage + nYUVSize - 8;
 	XnUInt8* pRGBLast = pRGBAImage + nRGBSize - 16;
 
@@ -253,8 +242,7 @@ void YUV422ToRGB888(const XnUInt8* pYUVImage, XnUInt8* pRGBAImage, XnUInt32 nYUV
 #else // not Win32
 
 void YUV444ToRGBA(XnUInt8 cY, XnUInt8 cU, XnUInt8 cV,
-					XnUInt8& cR, XnUInt8& cG, XnUInt8& cB, XnUInt8& cA)
-{
+					XnUInt8& cR, XnUInt8& cG, XnUInt8& cB, XnUInt8& cA) {
 	XnInt32 nC = cY - 16;
 	XnInt16 nD = cU - 128;
 	XnInt16 nE = cV - 128;
@@ -267,8 +255,7 @@ void YUV444ToRGBA(XnUInt8 cY, XnUInt8 cU, XnUInt8 cV,
 	cA = 255;
 }
 
-void YUV422ToRGB888(const XnUInt8* pYUVImage, XnUInt8* pRGBImage, XnUInt32 nYUVSize, XnUInt32 nRGBSize)
-{
+void YUV422ToRGB888(const XnUInt8* pYUVImage, XnUInt8* pRGBImage, XnUInt32 nYUVSize, XnUInt32 nRGBSize) {
 	const XnUInt8* pCurrYUV = pYUVImage;
 	XnUInt8* pCurrRGB = pRGBImage;
 	const XnUInt8* pLastYUV = pYUVImage + nYUVSize - YUV422_BPP;
@@ -301,8 +288,7 @@ void DrawImage(const xn::ImageMetaData& im) {
 	float texXpos;
 	float texYpos;
 
-	if(!bInitialized)
-	{
+	if(!bInitialized) {
 		XnUInt16 nXRes = im.XRes();
 		XnUInt16 nYRes = im.YRes();
 		printf("%d %d\n", nXRes, nYRes);
@@ -370,8 +356,7 @@ void DrawImage(const xn::ImageMetaData& im) {
 	glDisable(GL_TEXTURE_2D);
 }
 
-void DrawDepthMap(const xn::DepthMetaData& dm)
-{
+void DrawDepthMap(const xn::DepthMetaData& dm) {
 	static bool bInitialized = false;	
 	static GLuint depthTexID;
 	static unsigned char* pDepthTexBuf;
@@ -384,8 +369,7 @@ void DrawDepthMap(const xn::DepthMetaData& dm)
 	float texXpos;
 	float texYpos;
 
-	if(!bInitialized)
-	{
+	if(!bInitialized) {
 		XnUInt16 nXRes = dm.XRes();
 		XnUInt16 nYRes = dm.YRes();
 		texWidth =  getClosestPowerOfTwo(nXRes);
@@ -406,6 +390,7 @@ void DrawDepthMap(const xn::DepthMetaData& dm)
 		texcoords[0] = texXpos, texcoords[1] = texYpos, texcoords[2] = texXpos, texcoords[7] = texYpos;
 
 	}
+
 	unsigned int nValue = 0;
 	unsigned int nHistValue = 0;
 	unsigned int nIndex = 0;
@@ -421,14 +406,11 @@ void DrawDepthMap(const xn::DepthMetaData& dm)
 
 	// Calculate the accumulative histogram
 	memset(g_pDepthHist, 0, MAX_DEPTH*sizeof(float));
-	for (nY=0; nY<g_nYRes; nY++)
-	{
-		for (nX=0; nX<g_nXRes; nX++)
-		{
+	for (nY=0; nY<g_nYRes; nY++) {
+		for (nX=0; nX<g_nXRes; nX++) {
 			nValue = *pDepth;
 
-			if (nValue != 0)
-			{
+			if (nValue != 0) {
 				g_pDepthHist[nValue]++;
 				nNumberOfPoints++;
 			}
@@ -437,50 +419,44 @@ void DrawDepthMap(const xn::DepthMetaData& dm)
 		}
 	}
 
-	for (nIndex=1; nIndex<MAX_DEPTH; nIndex++)
-	{
+	for (nIndex=1; nIndex<MAX_DEPTH; nIndex++) {
 		g_pDepthHist[nIndex] += g_pDepthHist[nIndex-1];
 	}
-	if (nNumberOfPoints)
-	{
-		for (nIndex=1; nIndex<MAX_DEPTH; nIndex++)
-		{
+
+	if (nNumberOfPoints) {
+		for (nIndex=1; nIndex<MAX_DEPTH; nIndex++) {
 			g_pDepthHist[nIndex] = (unsigned int)(256 * (1.0f - (g_pDepthHist[nIndex] / nNumberOfPoints)));
 		}
 	}
 
-	pDepth = dm.Data();
-	{
-		XnUInt32 nIndex = 0;
-		// Prepare the texture map
-		for (nY=0; nY<g_nYRes; nY++)
-		{
-			for (nX=0; nX < g_nXRes; nX++, nIndex++)
-			{
-				nValue = *pDepth;
+	pDepth = dm.Data(); 
 
-				if (nValue != 0)
-				{
-					nHistValue = g_pDepthHist[nValue];
+	nIndex = 0;
+	// Prepare the texture map
+	for (nY=0; nY<g_nYRes; nY++) {
+		for (nX=0; nX < g_nXRes; nX++, nIndex++) {
+			nValue = *pDepth;
 
-					pDestImage[0] = nHistValue; 
-					pDestImage[1] = nHistValue;
-					pDestImage[2] = nHistValue;
-				}
-				else
-				{
-					pDestImage[0] = 0;
-					pDestImage[1] = 0;
-					pDestImage[2] = 0;
-				}
+			if (nValue != 0) {
+				nHistValue = g_pDepthHist[nValue];
 
-				pDepth++;
-				pDestImage+=3;
+				pDestImage[0] = nHistValue; 
+				pDestImage[1] = nHistValue;
+				pDestImage[2] = nHistValue;
+			}
+			else {
+				pDestImage[0] = 0;
+				pDestImage[1] = 0;
+				pDestImage[2] = 0;
 			}
 
-			pDestImage += (texWidth - g_nXRes) *3;
+			pDepth++;
+			pDestImage+=3;
 		}
+
+		pDestImage += (texWidth - g_nXRes) *3;
 	}
+
 	glBindTexture(GL_TEXTURE_2D, depthTexID);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, texWidth, texHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, pDepthTexBuf);
 
@@ -491,9 +467,9 @@ void DrawDepthMap(const xn::DepthMetaData& dm)
 	DrawTexture(dm.XRes(),dm.YRes(),0,0);	
 	glDisable(GL_TEXTURE_2D);
 }
+
 #ifdef USE_GLUT
-void glPrintString(void *font, char *str)
-{
+void glPrintString(void *font, char *str) {
 	size_t i,l = strlen(str);
 
 	for(i=0; i<l; i++)
@@ -501,8 +477,7 @@ void glPrintString(void *font, char *str)
 		glutBitmapCharacter(font,*str++);
 	}
 }
-void DrawFrameID(XnUInt32 nFrameID)
-{
+void DrawFrameID(XnUInt32 nFrameID) {
 	glColor4f(1,0,0,1);
 	glRasterPos2i(20, 50);
 	XnChar strLabel[20];
@@ -512,8 +487,7 @@ void DrawFrameID(XnUInt32 nFrameID)
 #endif
 
 // Colors for the points
-XnFloat Colors[][3] =
-{
+XnFloat Colors[][3] = {
 	{0.5,0.5,0.5},	// Grey
 	{0,1,0},	// Green
 	{0,0.5,1},	// Light blue
@@ -524,25 +498,21 @@ XnFloat Colors[][3] =
 };
 XnUInt32 nColors = 6;
 
-XnBool PointDrawer::IsTouching(XnUInt32 id)
-{
-	for (std::list<XnUInt32>::const_iterator iter = m_TouchingFOVEdge.begin(); iter != m_TouchingFOVEdge.end(); ++iter)
-	{
+XnBool PointDrawer::IsTouching(XnUInt32 id) {
+	for (std::list<XnUInt32>::const_iterator iter = m_TouchingFOVEdge.begin(); iter != m_TouchingFOVEdge.end(); ++iter) {
 		if (*iter == id)
 			return TRUE;
 	}
 	return FALSE;
 }
 
-void PointDrawer::Draw()
-{
+void PointDrawer::Draw() {
 	std::map<XnUInt32, std::list<XnPoint3D> >::const_iterator PointIterator;
 
 	// Go over each existing hand
 	for (PointIterator = m_History.begin();
 			PointIterator != m_History.end();
-			++PointIterator)
-	{
+			++PointIterator) {
 		// Clear buffer
 		XnUInt32 nPoints = 0;
 		XnUInt32 i = 0;
@@ -552,8 +522,7 @@ void PointDrawer::Draw()
 		std::list<XnPoint3D>::const_iterator PositionIterator;
 		for (PositionIterator = PointIterator->second.begin();
 				PositionIterator != PointIterator->second.end();
-				++PositionIterator, ++i)
-		{
+				++PositionIterator, ++i) {
 			// Add position to buffer
 			XnPoint3D pt(*PositionIterator);
 			m_pfPositionBuffer[3*i] = pt.X;
@@ -564,8 +533,10 @@ void PointDrawer::Draw()
 		// Set color
 		XnUInt32 nColor = Id % nColors;
 		XnUInt32 nSingle = GetPrimaryID();
-		if (Id == GetPrimaryID())
+		if (Id == GetPrimaryID()) {
 			nColor = 6;
+		}
+
 		// Draw buffer:
 		glColor4f(Colors[nColor][0],
 				Colors[nColor][1],
@@ -576,8 +547,7 @@ void PointDrawer::Draw()
 		glDrawArrays(GL_LINE_STRIP, 0, i);
 
 
-		if (IsTouching(Id))
-		{
+		if (IsTouching(Id)) {
 			glColor4f(1.0f, 0.0f, 0.0f, 1.0f);
 		}
 		glPointSize(8);
@@ -585,14 +555,12 @@ void PointDrawer::Draw()
 		glFlush();
 	}
 }
-void PointDrawer::SetTouchingFOVEdge(XnUInt32 nID)
-{
+void PointDrawer::SetTouchingFOVEdge(XnUInt32 nID) {
 	m_TouchingFOVEdge.push_front(nID);
 }
 
 // Handle a new Message
-void PointDrawer::Update(XnVMessage* pMessage)
-{
+void PointDrawer::Update(XnVMessage* pMessage) {
 	// PointControl's Update calls all callbacks for each hand
 	XnVPointControl::Update(pMessage);
 	
